@@ -31,7 +31,8 @@
         <hr/>
 
         <?php
-        include dirname( __DIR__ ) . '/src/BookmarkletGen.php';
+        //include dirname( __DIR__ ) . '/src/BookmarkletGen.php';
+        include __DIR__ . '/src/BookmarkletGen.php'; // for php5.3+
         $book = new BookmarkletGen;
         $link = $book->crunch( $post );
         printf( '<p>Test your bookmarklet: <a href="%s">bookmarklet</a></p>', $link );
