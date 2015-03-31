@@ -29,8 +29,14 @@ class BookmarkletGen {
      * @return string        Bookmarklet link
      */
     public function crunch( $code ) {
-        $out = $code = "(function() {\n" . $code . "\n})();";
-
+        $pattern = '/^javascript\:/';
+        
+        if(preg_match($pattern,$code)){
+            $out = $code = preg_replace( $pattern, '', $code );
+        }else{
+            $out = $code = "(function() {\n" . $code . "\n})();";
+        }
+        
         $out = $this->replace_strings( $out );
         $out = $this->kill_comments( $out );
         $out = $this->compress_white_space( $out );
@@ -67,8 +73,8 @@ class BookmarkletGen {
      * @return string        Commentless code
      */
     private function kill_comments( $code ) {
-        $code = preg_replace( '!\s*//.+$!m', '', $code );
-        $code = preg_replace( '!/\*.+?\*/!sm', '', $code ); // s modifier: dot matches new lines
+        $code = preg_replace( '/\s*//.+$/m', '', $code );
+        $code = preg_replace( '//\*.+?\*//sm', '', $code ); // s modifier: dot matches new lines
         
         return $code;
     }
@@ -83,8 +89,8 @@ class BookmarkletGen {
      */
     private function compress_white_space( $code ) {
         // Tabs to space, no more than 1 consecutive space
-        $code = preg_replace( '!\t!m', ' ', $code );
-        $code = preg_replace( '![ ]{2,}!m', ' ', $code );
+        $code = preg_replace( '/\t/m', ' ', $code );
+        $code = preg_replace( '/[ ]{2,}/m', ' ', $code );
         
         // Remove uneccessary white space around operators, braces and brackets.
         // \xHH sequence is: !%&()*+,-/:;<=>?[]\{|}~
